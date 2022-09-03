@@ -33,7 +33,7 @@ import static net.runelite.client.util.Text.removeTags;
 
 @Slf4j
 @PluginDescriptor(
-	name = "forsen lines"
+	name = "Forsen Lines"
 )
 public class ForsenLines extends Plugin
 {
