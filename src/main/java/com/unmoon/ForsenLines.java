@@ -1,8 +1,11 @@
 package com.unmoon;
 
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.Player;
+import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOptionClicked;
@@ -30,14 +33,14 @@ import static net.runelite.client.util.Text.removeTags;
 
 @Slf4j
 @PluginDescriptor(
-	name = "forsen-lines"
+	name = "forsen lines"
 )
 public class ForsenLines extends Plugin
 {
 	@Inject
 	private Client client;
 
-	private static final List<String> death_sounds = Arrays.asList("deathScreen_title.wav", "death_attack_fall.wav", "death_attack_lava.wav", "death_attack_onFire.wav", "death_fell_accident_generic.wav");
+	private static final List<String> death_sounds = Arrays.asList("deathScreen_respawn.wav", "deathScreen_title.wav", "death_attack_fall.wav", "death_attack_lava.wav", "death_attack_onFire.wav", "death_fell_accident_generic.wav");
 
 	@Override
 	protected void startUp() throws Exception
@@ -79,21 +82,33 @@ public class ForsenLines extends Plugin
 	}
 
 	@Subscribe
+	public void onActorDeath(ActorDeath event)
+	{
+		Actor actor = event.getActor();
+		if (actor instanceof Player) {
+			Player player = (Player) actor;
+			if (player == client.getLocalPlayer()) {
+				// TODO: different messages for different bosses
+				playSound(getRandomElement(death_sounds));
+			}
+		}
+	}
+
+	@Subscribe
 	public void onChatMessage(ChatMessage event)
 	{
 		if (event.getType() != GAMEMESSAGE) return;
 		String message = event.getMessage();
 		switch (message)
 		{
-			// TODO: different messages for different bosses
-			case "Oh dear, you are dead!": playSound(getRandomElement(death_sounds)); return;
+			case "You failed to survive the Tombs of Amascut.": playSound("menu_returnToMenu.wav"); return;
 			case "You enter the Tombs of Amascut...": playSound("narrator_screen_title.wav"); return;
 			case "You abandon the raid and leave the Tombs of Amascut.": playSound("menu_savingLevel.wav"); return;
 			case "Challenge started: The Wardens": playSound("advancements_end_root_title.wav"); return;
 			case "The statue has been struck! The seal weakens!": playSound("advancements_story_mine_stone_title.wav"); return;
 		}
-		if (message.startsWith("Your party failed to complete the challenge. You have ")) playSound("deathScreen_respawn.wav");
-		else if (message.startsWith("Challenge complete: Path of Het. Duration:")) playSound("advancements_story_upgrade_tools_title.wav");
+
+		if (message.startsWith("Challenge complete: Path of Het. Duration:")) playSound("advancements_story_upgrade_tools_title.wav");
 	}
 
 	@Subscribe
@@ -119,7 +134,6 @@ public class ForsenLines extends Plugin
 			case "ActivateHardcore Run": playSound("options_difficulty_hardcore.wav"); return;
 			case "ViewApplicants": playSound("menu_multiplayer.wav"); return;
 			case "ViewInvocations": playSound("menu_options.wav"); return;
-			case "Clear All": playSound("menu_returnToMenu.wav"); return;
 			case "Logout": playSound("menu_quit.wav"); return;
 			case "InspectGrouping Obelisk": playSound("deathScreen_titleScreen.wav"); return;
 			case "EnterEntry": playSound("selectWorld_enterName.wav"); return;
