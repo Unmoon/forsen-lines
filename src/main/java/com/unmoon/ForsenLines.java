@@ -22,6 +22,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -65,7 +66,8 @@ public class ForsenLines extends Plugin
 			return;
 		}
 		try {
-			AudioInputStream sound = AudioSystem.getAudioInputStream(stream);
+			InputStream fileStream = new BufferedInputStream(stream);
+			AudioInputStream sound = AudioSystem.getAudioInputStream(fileStream);
 			Clip clip = AudioSystem.getClip();
 			clip.open(sound);
 			clip.loop(0);  // play once
