@@ -113,16 +113,16 @@ public class ForsenLines extends Plugin
 		if (message.startsWith("Challenge complete: Path of Het. Duration:")) playSound("advancements_story_upgrade_tools_title.wav");
 	}
 
-	@Subscribe
-	public void onWidgetLoaded(WidgetLoaded event)
-	{
-		if (event.getGroupId() != 229) return;
-		Widget toaLeaveDialog = client.getWidget(WidgetInfo.PACK(229, 1));
-		if (toaLeaveDialog != null)
-		{
-			playSound("deathScreen_quit_confirm.wav");
-		}
-	}
+//	@Subscribe
+//	public void onWidgetLoaded(WidgetLoaded event)
+//	{
+//		if (event.getGroupId() != 229) return;
+//		Widget toaLeaveDialog = client.getWidget(WidgetInfo.PACK(229, 1));
+//		if (toaLeaveDialog != null)
+//		{
+//			playSound("deathScreen_quit_confirm.wav");
+//		}
+//	}
 
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event) {
